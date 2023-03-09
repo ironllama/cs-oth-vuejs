@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+</head>
+
+<body id="app">
+  <div>{{ messages.message }}
+    <p v-html="messages.new_message"></p>
+    <p><a v-bind:href="other.link_dest">Go to Google!</a></p>
+    <p><a :href="other.link_dest">Great Googly Moogly!</a></p>
+    <p><button v-if="other.butt_show">Sometimes I'm here.</button></p>
+    <p><button id="second">Push me for an alert! Works with addEventListener</button></p>
+    <p><button v-on:click="alertMe">Push me for an alert!</button></p>
+    <p><button @click="alertMe">Push me for an alert!</button></p>
+    <p><button onclick="alertMeOutside()">Does this work? Nope.</button></p>
+    <p><button @click="countUp">{{ count }}</button></p>
+    <p>{{ testArr }}</p>
+  </div>
+
+  <script type="module">
+    import {ref, reactive, createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    createApp({
+      setup() {
+        const message = 'Hello Vue! <span style="color:red">Am I red?</span>';
+        const count = ref(0);
+        const testArr = [1, 4, 6];
+
+        const messages = reactive({
+          message: 'Hello Vue! <span style="color:red">Am I red?</span>',
+          new_message: 'Hello Vue! <span style="color:red">Am I red?</span>',
+        });
+
+        const other = reactive({
+          butt_show: true,
+          link_dest: 'https://google.com',
+        })
+
+        function countUp() {
+          count.value++;
+          testArr[0] = 2;
+          messages.message = "What?!";
+        }
+
+        return {
+          message,
+          count,
+          testArr,
+          messages,
+          other,
+          countUp
+        }
+      }
+    }).mount('#app');
+
+    // import {createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+    // const app = createApp({
+    //   data() {
+    //     return {
+    //       message: 'Hello Vue! <span style="color:red">Am I red?</span>',
+    //       new_message: 'Hello again! <span style="color:red">Am I red?</span>',
+    //       link_dest: "https://google.com",
+    //       butt_show: false,
+
+    //     }
+    //   },
+    //   methods: {
+    //     alertMe: function () {
+    //       alert("Inside the Vue object!");
+    //       alertMeOutside();
+    //     }
+    //   }
+    // }).mount('#app');
+
+
+
+    function alertMeOutside() {
+      alert("You've been alerted!");
+    }
+    second.addEventListener("click", alertMeOutside);
+  </script>
+
+
+  <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+  <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
+</body>
+
+</html>

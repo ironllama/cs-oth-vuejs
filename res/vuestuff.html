@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>replit</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <!--   <div id="app">
+    <div>{{ message }}</div>
+    <p>Using text interpolation: {{ rawHtml }}</p>
+    <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+    <p><button v-if="showButt">Yo!</button></p>
+    <p><a v-bind:href="linkDest">Great Googly Moogly!</a></p>
+    <p><a :href="linkDest">Good Googly Noogly!</a></p>
+    <p v-on:click="random">Don't click me!</p>
+    <p @click="random">Definitely don't click me!</p>
+    <button @click="increment">
+      {{ state.count }}
+    </button>
+  </div> -->
+
+    <div id="app">
+        <div>{{ state.message }}</div>
+        <p>Using text interpolation: {{ state.rawHtml }}</p>
+        <p>Using v-html directive: <span v-html="state.rawHtml"></span></p>
+        <p><button v-if="state.showButt">Yo!</button></p>
+        <p><a v-bind:href="state.linkDest">Great Googly Moogly!</a></p>
+        <p><a :href="state.linkDest">Good Googly Noogly!</a></p>
+        <p v-on:click="state.random">Don't click me!</p>
+        <p @click="state.random">Definitely don't click me!</p>
+        <button @click="increment">
+            {{ count }}
+        </button>
+    </div>
+
+    <script type="module">
+        // import {createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+        // const app = createApp({
+        //   data() {
+        //     return {
+        //       message: 'Hello Vue!',
+        //       // rawHtml: '<span style="color: red"> This should be red.</span>',
+        //       rawHtml: "<span style='color: red'> This should be red.</span>",
+        //       showButt: true,
+        //       // linkDest: 'https://codeseoul.org',
+        //       linkDest: 'javascript:alert("Go to https://codeseoul.org!")',
+        //     }
+        //   },
+        //   methods: {
+        //     random() {
+        //       alert("Inside the Vue object methods.random()!");
+        //       random();
+        //     }
+        //   }
+        // }).mount('#app');
+
+        import { createApp, ref, reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+        const app = createApp({
+            setup() {
+                const state = reactive({
+                    message: 'Hello Vue!',
+                    // rawHtml: '<span style="color: red"> This should be red.</span>',
+                    rawHtml: "<span style='color: red'> This should be red.</span>",
+                    showButt: true,
+                    // linkDest: 'https://codeseoul.org',
+                    linkDest: 'javascript:alert("Go to https://codeseoul.org!")',
+                });
+                const count = ref(0);
+
+                function increment() {
+                    count.value++  // Remember to use .value when using ref()!
+                }
+
+                return {
+                    state,
+                    count,
+                    increment
+                }
+            }
+        }).mount('#app');
+
+        function random() {
+            alert("That's random.");
+            // console.log("APP:", app);
+            // alert("That's random. Message was: " + app.message);
+        }
+    </script>
+    <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+    <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
+</body>
+
+</html>

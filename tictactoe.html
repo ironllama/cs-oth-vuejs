@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+      font-size: 2rem;
+    }
+
+    .gameboard {
+      display: flex;
+    }
+
+    .cell {
+      border: 1px solid black;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #winner {
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body id="app">
+  <div id="winner" v-if="winner">WINNER: {{ winner }}!</div>
+  <div class="gameboard">
+    <div v-for="(row, r_idx) in all_boxes">
+      <div @click="cellClicked(r_idx, c_idx)" class="cell" v-for="(col, c_idx) in row">
+        {{ col }}
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import {ref, reactive, createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    const vueStuff = createApp({
+      setup() {
+        const all_boxes = ref([["", "", ""], ["", "", ""], ["", "", ""]]);
+        let nextPlayer = "X";
+        let winner = ref(null);
+
+        function cellClicked(r, c) {
+          // console.log("CELL: ", r, c);
+          if (!winner.value) {
+            all_boxes.value[r][c] = nextPlayer;
+            nextPlayer = nextPlayer === 'X' ? 'O' : 'X';
+
+            winner.value = checkWinner();
+          }
+          // if (winner.value) console.log("WINNER: ", winner.value);
+        }
+
+        function checkWinner() {
+          for (let i = 0; i < 3; i++) {
+            // Check each row.
+            if (all_boxes.value[i][0] !== '' &&
+              all_boxes.value[i][0] === all_boxes.value[i][1] &&
+              all_boxes.value[i][1] === all_boxes.value[i][2]) {
+              return all_boxes.value[i][0];
+            }
+            // Check each col.
+            if (all_boxes.value[0][i] !== '' &&
+              all_boxes.value[0][i] === all_boxes.value[1][i] &&
+              all_boxes.value[1][i] === all_boxes.value[2][i]) {
+              return all_boxes.value[0][i];
+            }
+          }
+          // Check diagonal \
+          if (all_boxes.value[0][0] !== '' &&
+            all_boxes.value[0][0] === all_boxes.value[1][1] &&
+            all_boxes.value[1][1] === all_boxes.value[2][2]) {
+            return all_boxes.value[0][0];
+          }
+          // Check diagonal /
+          if (all_boxes.value[0][2] !== '' &&
+            all_boxes.value[0][2] === all_boxes.value[1][1] &&
+            all_boxes.value[1][1] === all_boxes.value[2][0]) {
+            return all_boxes.value[0][2];
+          }
+
+          return null;
+        }
+
+        return {
+          all_boxes,
+          cellClicked,
+          winner
+        }
+      }
+    }).mount("#app");
+  </script>
+
+
+  <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+  <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
+</body>
+
+</html>

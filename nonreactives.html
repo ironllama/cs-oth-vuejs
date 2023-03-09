@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+      font-size: 1.5rem;
+    }
+
+    button {
+      padding: .5rem 1.5rem;
+      margin: 1rem 0.5rem;
+      background-color: cornflowerblue;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body id="app">
+  <div>
+    <button @click="pushReactive">Update Reactive!</button>
+    <button @click="pushNon">Update Non-Reactive!</button>
+  </div>
+  <p>Non-reactive string: {{ notref_str }}</p>
+  <p>Non-reactive number: {{ notref_num }}</p>
+  <p>Non-reactive array: {{ notref_arr }}</p>
+  <p>Non-reactive object: {{ notref_obj }}</p>
+  <p>Reactive string: {{ ref_str }}</p>
+  <p>Non-reactive string: {{ notref_str }}</p>
+  <script type="module">
+    import {ref, reactive, createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+
+    createApp({
+      setup() {
+        // Non-reactive primitives do not get update on redraws. (Might be just CDN version.)
+        let notref_str = "0";
+        let notref_num = 0;
+
+        // However, non-reactive object DO get updated on reactive redraws.
+        let notref_arr = [0, 0, 0];
+        let notref_obj = {num: 0}
+
+        // Reactive to trigger redraw.
+        const ref_str = ref("0");
+
+        function pushReactive() {
+          ref_str.value = (parseInt(ref_str.value) + 1) + "";
+
+          pushNon();  // Also update the non-reactives!
+        }
+
+        function pushNon() {
+          notref_str = (parseInt(notref_str) + 1) + "";
+          // console.log("NOTREF_STR:", notref_str);
+          notref_num++;
+          notref_arr[1]++;
+          notref_obj.num++;
+        }
+
+        return {
+          notref_str,
+          notref_num,
+          notref_arr,
+          notref_obj,
+          ref_str,
+          pushReactive,
+          pushNon,
+        }
+      }
+    }).mount('#app');
+  </script>
+
+  <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+  <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
+</body>
+
+</html>

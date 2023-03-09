@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+
+    #gameboard {
+      display: flex;
+    }
+
+    .cell {
+      height: 40px;
+      width: 40px;
+      border: 1px solid black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2em;
+    }
+
+    #winner {
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body id="app">
+  <div id="winner" v-if="gameState.winner">WINNER: {{ gameState.winner }}!</div>
+  <div id="gameboard">
+    <div v-for="row in 3">
+      <Cell :next="getNextPlayer" :col="col" :row="row" v-for="col in 3" />
+    </div>
+  </div>
+
+  <script type="module">
+    import {ref, reactive, createApp} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+    // import Cell from './cell.vue';  // CDN version doesn't seem to work with .vue files. :(
+    import Cell from './cell.js';
+
+    const vue = createApp({
+      components: {
+        Cell,
+      },
+      setup() {
+        const gameState = reactive({
+          winner: null,
+        });
+
+        let allMoves = [];
+
+        function getNextPlayer(col, row) {
+          if (!gameState.winner) {
+            allMoves.push([col - 1, row - 1]);  // -1 because v-for indexes start with 1! Ugh.
+
+            gameState.winner = checkWinner();
+
+            return allMoves.length % 2 == 0 ? 'O' : 'X';
+          }
+          else return '';
+        }
+
+        function checkWinner() {
+          if (allMoves.length < 5) return null;  // Can't win with fewer than 5 moves!
+
+          const xs = [[0, 0, 0], [0, 0, 0], 0, 0];  // [rows, cols, diag\, diag/]
+          const os = [[0, 0, 0], [0, 0, 0], 0, 0];  // [rows, cols, diag\, diag/]
+          const xos = [xs, os];  // Stick them all together. Use i % 2 to determine player.
+
+          for (const [idx, [col, row]] of allMoves.entries()) {
+            let player = xos[idx % 2];
+            player[0][col] += 1;  // Tally one for specified col.
+            player[1][row] += 1;  // Tally one for specified row.
+            if (col == row) player[2] += 1;  // Tally one if on \ diag.
+            if ((col + row) == 2) player[3] += 1;  // Tally one if on / diag.
+            console.log("ADDING:", col, row, JSON.stringify(player), player[1][row] == 3);
+
+            // See if any tallys (cols, row, diags) add up to 3.
+            if (player[0][col] == 3 || player[1][row] == 3 || player[2] == 3 || player[3] == 3) {
+              return (idx % 2 == 0 ? 'X' : 'O');
+            }
+          }
+
+          if (allMoves.length == 9) return 'TIE';
+          else return null;
+        }
+
+        return {
+          gameState,
+          getNextPlayer,
+        }
+      },
+    }).mount('#app');
+
+    // document.querySelectorAll('.cell')
+    //   .forEach(el => el.addEventListener('click',
+    //     (evt) => {
+    //       console.log("PLY:", vue.getNextPlayer());
+    //       return evt.target.innerHTML = Math.floor(Math.random() * 10) + '';
+    //     })
+    //   );
+  </script>
+</body>
+
+</html>
